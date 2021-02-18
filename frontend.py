@@ -10,9 +10,14 @@ root.geometry("510x420")
 #play button
 playlevel = 0
 playskill = 0
+playwad = ""
+playfast = ""
+playrespawn = ""
 def PlayDoom():
-    print("./crispy-doom -warp "+str(playlevel)+" -skill "+str(SkillVar.get())+" -levelstat")
-    os.system("./crispy-doom -warp "+str(playlevel)+" -skill "+str(SkillVar.get())+" -levelstat")
+    print("./crispy-doom"+playwad+" -warp "+str(playlevel)+" -skill "+str(SkillVar.get())+playfast+playrespawn+" -levelstat")
+    os.system("./crispy-doom"+playwad+" -warp "+str(playlevel)+" -skill "+str(SkillVar.get())+playfast+playrespawn+" -levelstat")
+    print("doom closed")
+
 
 PlayBtn = Button(root, text = "PLAY", command = PlayDoom)
 PlayBtn.grid(row=0,column=0, sticky=N)
@@ -34,12 +39,26 @@ MenuBttn["menu"] = SkillMenu
 MenuBttn.grid(row=0,column=0, sticky=W)
 
 #parameter selector
+def Fastfunc():
+    global playfast
+    if FastVar.get() == 1:
+        playfast = " -fast"
+    else:
+        playfast = ""
+
+def Respawnfunc():
+    global playrespawn
+    if RespawnVar.get() == 1:
+        playrespawn = " -respawn"
+    else:
+        playrespawn = ""
+
 FastVar = IntVar()
-FChkBttn = Checkbutton(SPframe, text = "Fast", width = 4, variable = FastVar)
+FChkBttn = Checkbutton(SPframe, text = "Fast", width = 4, variable = FastVar, command = Fastfunc)
 FChkBttn.grid(row=0,column=1, sticky=W)
 
 RespawnVar = IntVar()
-RChkBtn = Checkbutton(SPframe, text = "Respawn", width = 8, variable = RespawnVar)
+RChkBtn = Checkbutton(SPframe, text = "Respawn", width = 8, variable = RespawnVar, command = Respawnfunc)
 RChkBtn.grid(row=0,column=2, sticky=W)
 
 #SPframe spacer (this is a dumb way)
@@ -56,44 +75,63 @@ WADprogress.grid_remove()
 
 #WAD selector function
 def wadnamechange1(event):
+    global playwad
+    global playlevel
     WADprogress.grid(row=1,column=1, sticky=E)
     if W1listbox.get(W1listbox.curselection()) == "DOOM":
         WNlabel.config(text = "The Ultimate Doom")
+        playwad = " -iwad doom.wad"
     if W1listbox.get(W1listbox.curselection()) == "SIGIL_v1_21":
         WNlabel.config(text = "SIGIL")
+        playwad = " -iwad doom.wad -file sigil_v1_21.wad"
     if W1listbox.get(W1listbox.curselection()) == "DOOM2":
         WNlabel.config(text = "Doom II")
+        playwad = " -iwad doom2.wad"
     if W1listbox.get(W1listbox.curselection()) == "NERVE":
         WNlabel.config(text = "No Rest for the Living")
+        playwad = " -iwad doom2.wad -file nerve.wad"
     if W1listbox.get(W1listbox.curselection()) == "TNT":
         WNlabel.config(text = "TNT: Evilution")
+        playwad = " -iwad tnt.wad"
     if W1listbox.get(W1listbox.curselection()) == "PLUTONIA":
         WNlabel.config(text = "The Plutonia Experiment")
-    if W1listbox.get(W1listbox.curselection()) == "MASTERLEVELS":
+        playwad = " -iwad plutonia.wad"
+    if W1listbox.get(W1listbox.curselection()) == "MASTERLEVELS": #THIS IS GONNA BE A PAIN IN THE ASS TO GET WORKING SO ABRITRARY :O
         WNlabel.config(text = "Master Levels for Doom II")
     WADlevelDrawButton()
     LVLlabel.config(text = "")
     WIframe.grid_remove()
+    playlevel = 0
 
 def wadnamechange2(event):
+    global playwad
+    global playlevel
     WADprogress.grid(row=1,column=1, sticky=E) 
     if W2listbox.get(W2listbox.curselection()) == "DBIMPACT":
         WNlabel.config(text = "Double Impact")
+        playwad = " -iwad doom.wad -file dbimpact.wad"
     if W2listbox.get(W2listbox.curselection()) == "NEIS":
         WNlabel.config(text = "No End in Sight")
+        playwad = " -iwad doom.wad -file neis.wad -deh neis.deh"
     if W2listbox.get(W2listbox.curselection()) == "DEATHLESS":
         WNlabel.config(text = "Deathless")
+        playwad = " -iwad doom.wad -file deathless.wad"
     if W2listbox.get(W2listbox.curselection()) == "BTSX_e1":
         WNlabel.config(text = "Back to Saturn X episode 1")
+        playwad = " -iwad doom2.wad -file btsx_e1a.wad btsx_e1b.wad -deh btsx_e1.deh"
     if W2listbox.get(W2listbox.curselection()) == "BTSX_e2":
         WNlabel.config(text = "Back to Saturn X episode 2")
-    if W2listbox.get(W2listbox.curselection()) == "REKKRSA":
+        playwad = " -iwad doom2.wad -file btsx_e2a.wad btsx_e2b.wad -deh btsx_e2.deh"
+    if W2listbox.get(W2listbox.curselection()) == "REKKR":
         WNlabel.config(text = "REKKR")
+        playwad = " -iwad doom.wad -file rekkr.wad -deh rekkr.deh"
     if W2listbox.get(W2listbox.curselection()) == "DOOMZERO":
         WNlabel.config(text = "Doom Zero")
+        playwad = " -iwad doom2.wad -file DoomZero.wad -deh doomzero.deh" #this one is case senestive for whatever reason
     WADlevelDrawButton()
     LVLlabel.config(text = "")
-    #WNlabel.config(text = W2listbox.get(W2listbox.curselection()))
+    WIframe.grid_remove()
+    playlevel = 0
 
 #def wadnamechange3(event):
     #WNlabel.config(text = W3listbox.get(W3listbox.curselection()))
@@ -112,7 +150,7 @@ label = Label(root,text = "Add-ons WADs")
 label.grid(row=3,column=0, sticky=W)
 
 W2listbox = Listbox(root, height = 7, width = 15) 
-for i, wad in enumerate(["DBIMPACT", "NEIS", "DEATHLESS", "BTSX_e1", "BTSX_e2", "REKKRSA", "DOOMZERO"]): #thanks to akiyamn
+for i, wad in enumerate(["DBIMPACT", "NEIS", "DEATHLESS", "BTSX_e1", "BTSX_e2", "REKKR", "DOOMZERO"]): #thanks to akiyamn
     W2listbox.insert(i+1, wad) #thanks to akiyamn  
 W2listbox.grid(row=4,column=0, sticky=W)
 W2listbox.bind('<<ListboxSelect>>', wadnamechange2)
@@ -149,6 +187,9 @@ nBTSX1=["","Back to Saturn X Radio Report","Postal Blowfish","The Room Taking Sh
 nBTSX2=["","Shadow Port","Underwater Explosions","Wings of Thorn","Dirty Water","Tower in the Fountain of Sparks I","Useless Inventions","Shrine to the Dynamic Years (Athens Time Change Riots)","A Blue Shadow","Adverse Wind","Eureka Signs","Tower in the Fountain of Sparks II","Demons Are Real","Nation Gone Dry","Shocker in Gloomtown","The Theory of Broken Circles","Tower in the Fountain of Sparks III","Steeple of Knives","Optional Bases Opposed","Unbaited Vicar of Scorched Earth","Speedtraps for the Bee Kingdom","Bulldog Skin","Bite","Tower in the Fountain of Sparks IV","Perhaps Now the Vultures","Unstable Journey","Beneath a Festering Moon","","","","","Fireking Says No Cheating"]
 nREK=["","","","","","","","","","","","Sinking","Down","Flurrious","Blade Swamp","Fielding","Rampart","Dripstone Wharf","Hazardous Coast","Pop Some Hops","","On Fire","Drained","Sequester","Metal","Marketplace","Magnus Avenue","Mistory","Audience","Addle","","Isolation","Claustrophilia","Dungeon","Acrophobinox","Shine On","Seeing Red","Siege","Rok","Begin","","Village of Delusion","Ice Melt","Quick","Window Pain","Mal Arena","Cliffusion","Dance Macabre","EyeBrawl","home.wad"]
 nZERO=["","High-Rise Roof","Toxic Tower","Marble Zone","Triple Town","The Pits","Echo Halls","Claustrophobia","Module Base","Ancient Archives","Leap Gates","Too Close To Home","Underland","Tease","Crust","Peak Facility","Natural Supply","The Testing Labs","Atom Transporter","Quantum Processing","Familiar Face","Starbourn","The Cracks","Atmos Caves","Booster Hub","Abandoned Compound","Fortification","The Junction","Suspension","The Rematch","The Sarcophagus","Meat","Dark Roof"]
+
+#Wad button colors used for filtering when enabled will color buttons to show which have been completed or not
+BtnColor = ["#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD","#DDD"] 
 
 #WAD level selector buttons
 def WADlevelDrawButton():
@@ -222,7 +263,7 @@ def WADlevelDrawButton():
     #then draws the buttons again so their are no duplicates
     while i < levels:
         if mode == 0 or mode == 3:
-            LVbtn = Button(WSframe, text = "E"+str(y+1)+"M"+str(x+1), width = 2, font=WADFont,  command = lambda txt="E"+str(y+1)+"M"+str(x+1),num=((y+1)*10)+(x+1) : ChangeLevelNameOnButtonClick(txt,num))
+            LVbtn = Button(WSframe, text = "E"+str(y+1)+"M"+str(x+1), width = 2, font=WADFont, bg=BtnColor[i], command = lambda txt="E"+str(y+1)+"M"+str(x+1),num=((y+1)*10)+(x+1) : ChangeLevelNameOnButtonClick(txt,num))
         if mode == 2:
             LVbtn = Button(WSframe, text = "E"+str(y+5)+"M"+str(x+1), width = 2, font=WADFont,  command = lambda txt="E"+str(y+5)+"M"+str(x+1),num=((y+5)*10)+(x+1) : ChangeLevelNameOnButtonClick(txt,num))
         elif mode == 1 or mode == 4 or mode == 5:
